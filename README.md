@@ -44,7 +44,7 @@ La base de datos esta formada por 2 tablas:
 
 ## Diagrama de la base de datos.
 
-![BD Diagram](https://github.com/gbm25/BankApp/tree/master/Docs/images/db_diagram.png "Diagrama de la base de datos")
+![BD Diagram](https://github.com/gbm25/BankApp/blob/master/BankApp/Docs/images/db_diagram.png "Diagrama de la base de datos")
 
 # Estructura del código
 
