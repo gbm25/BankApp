@@ -2,13 +2,12 @@
 
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace BankApp
 {
     public class Customer
     {
-
         public int? Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
