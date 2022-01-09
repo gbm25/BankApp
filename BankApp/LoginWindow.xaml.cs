@@ -62,7 +62,7 @@ namespace BankApp
 
             SqlConnection conn = new(conStr); ;
             
-            SqlCommand command = new("Select id from Customer where username= @username and     password=@password" , conn);
+            SqlCommand command = new("SELECT id FROM Customer WHERE username= @username AND password=@password" , conn);
 
 
             command.Parameters.AddWithValue("@username", username);
