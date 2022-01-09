@@ -25,21 +25,15 @@ namespace BankApp
         public Customer current_customer;
         public CustomerWindow()
         {
-
-            current_customer = new Customer();
-            this.DataContext = current_customer;
-
-
+            current_customer = new();
             InitializeComponent();
-
         }
 
         private void SearchIcon_Click(object sender, RoutedEventArgs e)
         {
             if (codeTextbox.Text.Length > 0)
             {
-                current_customer.Id = null;
-                current_customer.BankAccounts.Clear();
+                ResetCustomer();
 
                 bool IsNumber = int.TryParse(codeTextbox.Text.Trim(), out int number);
                 if (IsNumber)
@@ -48,19 +42,18 @@ namespace BankApp
 
                     if (dataStatus)
                     {
-                        MessageBox.Show("Cliente cargado !");
+                        MessageBox.Show("Cliente cargado.");
                         UpdateFields();
                     }
                     else
                     {
-                        MessageBox.Show("Cliente no encontrado");
+                        MessageBox.Show("Cliente no encontrado.");
                         ClearFields();
-
                     }
                 }
                 else
                 {
-                    MessageBox.Show("El dato introducido debe de ser un número");
+                    MessageBox.Show("El dato introducido debe de ser un número.");
                     ClearFields();
                 }
 
@@ -68,45 +61,44 @@ namespace BankApp
 
             else
             {
-                MessageBox.Show("Debe escribir un numero de cliente antes de poder realizar una busqueda");
+                MessageBox.Show("Debe escribir un número de cliente antes de poder realizar una búsqueda.");
             }
 
         }
         private void NewCustomerButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (!CheckValideCustomerName(this.firstNameTextbox.Text))
             {
-                MessageBox.Show("El nombre debe contener entre 2 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El nombre debe contener entre 2 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerName(this.lastNameTextbox.Text))
             {
-                MessageBox.Show("El apellido debe contener entre 2 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El apellido debe contener entre 2 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerUsername(this.usernameTextbox.Text))
             {
-                MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerPass(this.passwordPWbox.Password.ToString()))
             {
-                MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un digito");
+                MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un dígito.");
             }
 
             else if (!CheckValideCustomerLocation(this.countryTextbox.Text))
             {
-                MessageBox.Show("El pais debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("El pais debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerLocation(this.regionTextbox.Text))
             {
-                MessageBox.Show("La Region debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("La Region debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerLocation(this.cityTextbox.Text))
             {
-                MessageBox.Show("La ciudad debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("La ciudad debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerAddress(this.addressTextbox.Text))
             {
-                MessageBox.Show("La dirección debe contener entre 1 y 250 caracteres");
+                MessageBox.Show("La dirección debe contener entre 1 y 250 caracteres.");
             }
             else
             {
@@ -116,7 +108,7 @@ namespace BankApp
 
                 if (insertStatus)
                 {
-                    MessageBox.Show("Se ha creado un nuevo cliente !");
+                    MessageBox.Show("Se ha creado un nuevo cliente.");
                 }
                 else
                 {
@@ -124,7 +116,7 @@ namespace BankApp
                 }
 
                 ClearFields();
-                UpdateCustomerInfo();
+                ResetCustomer();
             }
 
         }
@@ -132,40 +124,40 @@ namespace BankApp
         {
             if (this.current_customer.Id == null)
             {
-                MessageBox.Show("Debe buscar un cliente antes de poder modificar su información");
+                MessageBox.Show("Debe buscar un cliente antes de poder modificar su información.");
             }
             else if (!CheckValideCustomerName(this.firstNameTextbox.Text))
             {
-                MessageBox.Show("El nombre debe contener entre 2 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El nombre debe contener entre 2 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerName(this.lastNameTextbox.Text))
             {
-                MessageBox.Show("El apellido debe contener entre 2 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El apellido debe contener entre 2 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerUsername(this.usernameTextbox.Text))
             {
-                MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener digitos");
+                MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerPass(this.passwordPWbox.Password.ToString()))
             {
-                MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un digito");
+                MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un dígito.");
             }
 
             else if (!CheckValideCustomerLocation(this.countryTextbox.Text))
             {
-                MessageBox.Show("El pais debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("El pais debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerLocation(this.regionTextbox.Text))
             {
-                MessageBox.Show("La Region debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("La Region debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerLocation(this.cityTextbox.Text))
             {
-                MessageBox.Show("La ciudad debe contener entre 1 y 100 caracteres y no contener digitos");
+                MessageBox.Show("La ciudad debe contener entre 1 y 100 caracteres y no contener dígitos.");
             }
             else if (!CheckValideCustomerAddress(this.addressTextbox.Text))
             {
-                MessageBox.Show("La dirección debe contener entre 1 y 250 caracteres");
+                MessageBox.Show("La dirección debe contener entre 1 y 250 caracteres.");
             }
             else
             {
@@ -175,7 +167,7 @@ namespace BankApp
 
                 if (updateStatus)
                 {
-                    MessageBox.Show("Se ha actualizado el cliente !");
+                    MessageBox.Show("Se ha actualizado el cliente.");
                 }
                 else
                 {
@@ -183,9 +175,8 @@ namespace BankApp
                 }
 
                 ClearFields();
-                UpdateCustomerInfo();
+                ResetCustomer();
             }
-
         }
         private void DeleteCustomerButton_Click(object sender, RoutedEventArgs e)
         {
@@ -209,8 +200,7 @@ namespace BankApp
                 }
 
                 ClearFields();
-                UpdateCustomerInfo();
-
+                ResetCustomer();
             }
         }
         private void UpdateFields()
@@ -236,6 +226,11 @@ namespace BankApp
             current_customer.Region = this.regionTextbox.Text;
             current_customer.City = this.cityTextbox.Text;
             current_customer.Address = this.addressTextbox.Text;
+        }
+
+        private void ResetCustomer()
+        {
+            current_customer = new();
         }
 
         private void ClearFields()
@@ -275,7 +270,6 @@ namespace BankApp
 
         private void ShowAccountsButton_Click(object sender, RoutedEventArgs e)
         {
-
 
             if (current_customer.Id != null)
             {
