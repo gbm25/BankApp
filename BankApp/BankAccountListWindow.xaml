@@ -8,15 +8,12 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Bank Account" Height="150" Width="600">
-
-    <Grid>
-        <ListView Margin="10" Name="CustomerAccountsLW">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Account" Width="300" DisplayMemberBinding="{Binding Number}" />
-                    <GridViewColumn Header="Description" Width="300" DisplayMemberBinding="{Binding Description}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
+    <ListView Margin="10" Name="CustomerAccountsLW">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Header="Account" Width="300" DisplayMemberBinding="{Binding Number}" />
+                <GridViewColumn Header="Description" Width="235" DisplayMemberBinding="{Binding Description}" />
+            </GridView>
+        </ListView.View>
+    </ListView>
 </Window>
