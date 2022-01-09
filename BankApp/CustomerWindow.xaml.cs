@@ -48,7 +48,7 @@ namespace BankApp
 
                     if (dataStatus)
                     {
-                        MessageBox.Show("Cliente Cargado !");
+                        MessageBox.Show("Cliente cargado !");
                         UpdateFields();
                     }
                     else
@@ -83,11 +83,11 @@ namespace BankApp
             {
                 MessageBox.Show("El apellido debe contener entre 2 y 50 caracteres y no contener digitos");
             }
-            else if (!CheckValideCustomerName(this.usernameTextbox.Text))
+            else if (!CheckValideCustomerUsername(this.usernameTextbox.Text))
             {
                 MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener digitos");
             }
-            else if (!CheckValideCustomerPass(this.passwordTextbox.Password.ToString()))
+            else if (!CheckValideCustomerPass(this.passwordPWbox.Password.ToString()))
             {
                 MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un digito");
             }
@@ -146,7 +146,7 @@ namespace BankApp
             {
                 MessageBox.Show("El nombre de usuario debe contener entre 3 y 50 caracteres y no contener digitos");
             }
-            else if (!CheckValideCustomerPass(this.passwordTextbox.Password.ToString()))
+            else if (!CheckValideCustomerPass(this.passwordPWbox.Password.ToString()))
             {
                 MessageBox.Show("La contraseña debe contener entre 5 y 100 caracteres y contener al menos un digito");
             }
@@ -218,7 +218,7 @@ namespace BankApp
             this.firstNameTextbox.Text = current_customer.FirstName;
             this.lastNameTextbox.Text = current_customer.LastName;
             this.usernameTextbox.Text = current_customer.Username;
-            this.passwordTextbox.Password = current_customer.Password;
+            this.passwordPWbox.Password = current_customer.Password;
             this.countryTextbox.Text = current_customer.Country;
             this.regionTextbox.Text = current_customer.Region;
             this.cityTextbox.Text = current_customer.City;
@@ -231,7 +231,7 @@ namespace BankApp
             current_customer.FirstName = this.firstNameTextbox.Text;
             current_customer.LastName = this.lastNameTextbox.Text;
             current_customer.Username = this.usernameTextbox.Text;
-            current_customer.Password = this.passwordTextbox.Password.ToString();
+            current_customer.Password = this.passwordPWbox.Password.ToString();
             current_customer.Country = this.countryTextbox.Text;
             current_customer.Region = this.regionTextbox.Text;
             current_customer.City = this.cityTextbox.Text;
@@ -244,7 +244,7 @@ namespace BankApp
             this.firstNameTextbox.Text = "";
             this.lastNameTextbox.Text = "";
             this.usernameTextbox.Text = "";
-            this.passwordTextbox.Password = "";
+            this.passwordPWbox.Password = "";
             this.countryTextbox.Text = "";
             this.regionTextbox.Text = "";
             this.cityTextbox.Text = "";
