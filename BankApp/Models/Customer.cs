@@ -35,7 +35,7 @@ namespace BankApp
             BankAccounts = new();
 
         }
-        public Customer(int? id, string? firstName, string? lastName, string? username, string? password, string? country, string? region, string? city, string? address)
+        public Customer(int? id, string? firstName, string? lastName, string? username, string? password, string? country, string? region, string? city, string? address, DateTime? lastupdate)
         {
             Id = id;
             FirstName = firstName;
@@ -46,6 +46,7 @@ namespace BankApp
             Region = region;
             City = city;
             Address = address;
+            LastUpdate = lastupdate;
             BankAccounts = new();
         }
 
@@ -133,11 +134,11 @@ namespace BankApp
             string checkExist = @"IF EXISTS(SELECT * FROM Customer WHERE id = @id ";
             if (this.LastUpdate != null)
             {
-                checkExist += @"and (last_update IS NULL or last_update = @last_update))";
+                checkExist += @"AND (last_update IS NULL or last_update = @last_update))";
             }
             else
             {
-                checkExist += @"and last_update IS NULL)";
+                checkExist += @"AND last_update IS NULL)";
             }
 
 
@@ -197,7 +198,6 @@ namespace BankApp
 
             using SqlConnection connection = new(conStr);
 
-
             string query = @"DELETE FROM Customer WHERE id = @id;";
 
             using SqlCommand command = new(query, connection);
@@ -228,11 +228,10 @@ namespace BankApp
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
             SqlConnection conn;
 
-
             conn = new SqlConnection(conStr);
 
             conn.Open();
-            SqlCommand command = new("Select * from Account where customer_id=@id", conn);
+            SqlCommand command = new("SELECT * FROM Account WHERE customer_id=@id", conn);
 
             command.Parameters.AddWithValue("@id", this.Id);
 
