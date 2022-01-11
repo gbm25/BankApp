@@ -51,7 +51,7 @@ namespace BankApp
             get { return id; }
             set
             {
-                id = value;
+                this.id = value;
             }
         }
 
@@ -60,7 +60,7 @@ namespace BankApp
             get { return firstname; }
             set
             {
-                firstname = value;
+                this.firstname = value;
             }
         }
         public string? LastName
@@ -68,7 +68,7 @@ namespace BankApp
             get { return lastname; }
             set
             {
-                lastname = value;
+                this.lastname = value;
             }
         }
         public string? Username
@@ -76,7 +76,7 @@ namespace BankApp
             get { return username; }
             set
             {
-                username = value;
+                this.username = value;
             }
         }
         public string? Password
@@ -84,7 +84,7 @@ namespace BankApp
             get { return password; }
             set
             {
-                password = value;
+                this.password = value;
             }
         }
         public string? Country
@@ -92,7 +92,7 @@ namespace BankApp
             get { return country; }
             set
             {
-                country = value;
+                this.country = value;
             }
         }
         public string? Region
@@ -100,7 +100,7 @@ namespace BankApp
             get { return region; }
             set
             {
-                region = value;
+                this.region = value;
             }
         }
         public string? City
@@ -108,7 +108,7 @@ namespace BankApp
             get { return city; }
             set
             {
-                city = value;
+                this.city = value;
             }
         }
         public string? Address
@@ -116,7 +116,7 @@ namespace BankApp
             get { return address; }
             set
             {
-                address = value;
+                this.address = value;
             }
         }
         public DateTime? LastUpdate
@@ -124,7 +124,7 @@ namespace BankApp
             get { return lastupdate; }
             set
             {
-                lastupdate = value;
+                this.lastupdate = value;
             }
         }
         public ObservableCollection<BankAccount> BankAccount
@@ -132,7 +132,7 @@ namespace BankApp
             get { return bankaccount; }
             set
             {
-                bankaccount = value;
+                this.bankaccount = value;
             }
         }
     }
