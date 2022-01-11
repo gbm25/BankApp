@@ -22,28 +22,35 @@ namespace BankApp
     public partial class CustomerWindow : Window
     {
 
-        public Customer current_customer;
+        private readonly CustomerVM _customervm;
         public CustomerWindow()
         {
-            current_customer = new();
+            
             InitializeComponent();
+
+            _customervm = new CustomerVM();
+            
+            DataContext = _customervm;
+
         }
 
         private void SearchIcon_Click(object sender, RoutedEventArgs e)
         {
             if (codeTextbox.Text.Length > 0)
             {
-                ResetCustomer();
+                _customervm.ResetCustomer();
 
                 bool IsNumber = int.TryParse(codeTextbox.Text.Trim(), out int number);
                 if (IsNumber)
                 {
-                    bool dataStatus = current_customer.FillCustomerData(number);
+                    bool dataStatus = _customervm.FillCustomerData(number);
+
 
                     if (dataStatus)
                     {
+                        this.passwordPWbox.Password = _customervm.Password;
                         MessageBox.Show("Cliente cargado.");
-                        UpdateFields();
+                        
                     }
                     else
                     {
@@ -102,9 +109,9 @@ namespace BankApp
             }
             else
             {
-                UpdateCustomerInfo();
+                //UpdateCustomerInfo();
 
-                bool insertStatus = current_customer.PushNewCustomer();
+                bool insertStatus = _customervm.PushNewCustomer();
 
                 if (insertStatus)
                 {
@@ -116,13 +123,13 @@ namespace BankApp
                 }
 
                 ClearFields();
-                ResetCustomer();
+                _customervm.ResetCustomer();
             }
 
         }
         private void UpdateCustomerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.current_customer.Id == null)
+            if (_customervm.ID == null)
             {
                 MessageBox.Show("Debe buscar un cliente antes de poder modificar su información.");
             }
@@ -161,9 +168,9 @@ namespace BankApp
             }
             else
             {
-                UpdateCustomerInfo();
+                //UpdateCustomerInfo();
 
-                bool updateStatus = current_customer.UpdateCustomerinfo();
+                bool updateStatus = _customervm.UpdateCustomerinfo();
 
                 if (updateStatus)
                 {
@@ -175,20 +182,20 @@ namespace BankApp
                 }
 
                 ClearFields();
-                ResetCustomer();
+                _customervm.ResetCustomer();
             }
         }
         private void DeleteCustomerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.current_customer.Id == null)
+            if (_customervm.ID == null)
             {
                 MessageBox.Show("Debe buscar un cliente antes de poder eliminarlo");
             }
             else
             {
-                UpdateCustomerInfo();
+                //UpdateCustomerInfo();
 
-                bool deleteStatus = current_customer.DeleteCustomer();
+                bool deleteStatus = _customervm.DeleteCustomer();
 
                 if (deleteStatus)
                 {
@@ -200,37 +207,8 @@ namespace BankApp
                 }
 
                 ClearFields();
-                ResetCustomer();
+                _customervm.ResetCustomer();
             }
-        }
-        private void UpdateFields()
-        {
-            this.firstNameTextbox.Text = current_customer.FirstName;
-            this.lastNameTextbox.Text = current_customer.LastName;
-            this.usernameTextbox.Text = current_customer.Username;
-            this.passwordPWbox.Password = current_customer.Password;
-            this.countryTextbox.Text = current_customer.Country;
-            this.regionTextbox.Text = current_customer.Region;
-            this.cityTextbox.Text = current_customer.City;
-            this.addressTextbox.Text = current_customer.Address;
-
-        }
-
-        private void UpdateCustomerInfo()
-        {
-            current_customer.FirstName = this.firstNameTextbox.Text;
-            current_customer.LastName = this.lastNameTextbox.Text;
-            current_customer.Username = this.usernameTextbox.Text;
-            current_customer.Password = this.passwordPWbox.Password.ToString();
-            current_customer.Country = this.countryTextbox.Text;
-            current_customer.Region = this.regionTextbox.Text;
-            current_customer.City = this.cityTextbox.Text;
-            current_customer.Address = this.addressTextbox.Text;
-        }
-
-        private void ResetCustomer()
-        {
-            current_customer = new();
         }
 
         private void ClearFields()
@@ -271,18 +249,18 @@ namespace BankApp
         private void ShowAccountsButton_Click(object sender, RoutedEventArgs e)
         {
 
-            if (current_customer.Id != null)
+            if (_customervm.ID != null)
             {
-                bool statusUpdateAccounts = current_customer.UpdateBankAccountsList();
+                bool statusUpdateAccounts = _customervm.UpdateBankAccountsList();
                 if (statusUpdateAccounts)
                 {
-                    if (current_customer.BankAccounts.Count == 0)
+                    if (_customervm.BankAccount.Count == 0)
                     {
                         MessageBox.Show("El cliente no posee cuentas");
                     }
                     else
                     {
-                        BankAccountListWindow bankAccountListWindow = new(current_customer.BankAccounts);
+                        BankAccountListWindow bankAccountListWindow = new(_customervm.BankAccount);
                         bankAccountListWindow.ShowDialog();
                     }
                 }

@@ -35,7 +35,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="First Name:"/>
                 </Label>
-                <TextBox x:Name="firstNameTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Path=FirstName}" HorizontalAlignment="Stretch" />
+                <TextBox x:Name="firstNameTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
             </Grid>
             <!--#endregion-->
             <!--#region Last Name-->
@@ -47,7 +47,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="Last Name:"/>
                 </Label>
-                <TextBox x:Name="lastNameTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="lastNameTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
             <!--#region Username-->
@@ -59,7 +59,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="Username:"/>
                 </Label>
-                <TextBox x:Name="usernameTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="usernameTextbox" Grid.Column="1" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
             <!--#region Password-->
@@ -83,7 +83,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="Country:"/>
                 </Label>
-                <TextBox x:Name="countryTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="countryTextbox" Grid.Column="1" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Country, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
             <!--#region Region-->
@@ -95,7 +95,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="Region:"/>
                 </Label>
-                <TextBox x:Name="regionTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="regionTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Region, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
             <!--#region City-->
@@ -107,7 +107,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="City:"/>
                 </Label>
-                <TextBox x:Name="cityTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="cityTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding City, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
             <!--#region Address-->
@@ -119,7 +119,7 @@
                 <Label Grid.Column="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Text="Address:"/>
                 </Label>
-                <TextBox x:Name="addressTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="addressTextbox" Grid.Column="1"  Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--#endregion-->
         </StackPanel>
