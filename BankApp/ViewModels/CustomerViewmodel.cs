@@ -9,7 +9,7 @@ using BankApp.Utils;
 using System.Windows.Input;
 using System.Windows;
 
-namespace BankApp
+namespace BankApp.ViewModels
 {
     public class CustomerVM : INotifyPropertyChanged
     {
@@ -240,7 +240,7 @@ namespace BankApp
 
         public bool CanSearchCustomerOnDB(object? param)
         {
-            bool IsNumber = int.TryParse((string?)param, out int number);
+            bool IsNumber = int.TryParse((string?)param, out _);
 
             return IsNumber;
         }
