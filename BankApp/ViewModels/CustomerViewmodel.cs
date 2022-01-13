@@ -6,12 +6,20 @@ using System.Configuration;
 using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
 using BankApp.Utils;
+using BankApp.Validations;
 using System.Windows.Input;
 using System.Windows;
+using System.Collections;
+using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Linq;
+using System.Globalization;
+
+
 
 namespace BankApp.ViewModels
 {
-    public class CustomerVM : INotifyPropertyChanged
+    public class CustomerVM : INotifyPropertyChanged, INotifyDataErrorInfo
     {
 
         private Customer customer;
@@ -26,17 +34,23 @@ namespace BankApp.ViewModels
 
         private RelayCommand? _ShowAccountsAction;
 
+        private string? _PlaceholderID;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+        private Dictionary<String, List<String>> Errors { get; }
+
+        // Mapea el nombre de una propiedad a una lista ValidationRule que pertenece a esa propiedad
+        private Dictionary<String, List<ValidationRule>> ValidationRules { get; }
+
+        #region Propiedades
         public int? ID
         {
             get { return customer.ID; }
             set
-            {
+            {   
+                ValidateProperty(value);
                 customer.ID = value;
                 OnPropertyChanged();
             }
@@ -47,6 +61,7 @@ namespace BankApp.ViewModels
             get { return customer.FirstName; }
             set
             {
+                ValidateProperty(value);
                 customer.FirstName = value;
                 OnPropertyChanged();
             }
@@ -56,6 +71,7 @@ namespace BankApp.ViewModels
             get { return customer.LastName; }
             set
             {
+                ValidateProperty(value);
                 customer.LastName = value;
                 OnPropertyChanged();
             }
@@ -65,6 +81,7 @@ namespace BankApp.ViewModels
             get { return customer.Username; }
             set
             {
+                ValidateProperty(value);
                 customer.Username = value;
                 OnPropertyChanged();
             }
@@ -74,6 +91,7 @@ namespace BankApp.ViewModels
             get { return customer.Password; }
             set
             {
+                ValidateProperty(value);
                 customer.Password = value;
                 OnPropertyChanged();
             }
@@ -83,6 +101,7 @@ namespace BankApp.ViewModels
             get { return customer.Country; }
             set
             {
+                ValidateProperty(value);
                 customer.Country = value;
                 OnPropertyChanged();
             }
@@ -92,6 +111,7 @@ namespace BankApp.ViewModels
             get { return customer.Region; }
             set
             {
+                ValidateProperty(value);
                 customer.Region = value;
                 OnPropertyChanged();
             }
@@ -101,6 +121,7 @@ namespace BankApp.ViewModels
             get { return customer.City; }
             set
             {
+                ValidateProperty(value);
                 customer.City = value;
                 OnPropertyChanged();
             }
@@ -119,6 +140,7 @@ namespace BankApp.ViewModels
             get { return customer.LastUpdate; }
             set
             {
+                ValidateProperty(value);
                 customer.LastUpdate = value;
                 OnPropertyChanged();
             }
@@ -128,15 +150,121 @@ namespace BankApp.ViewModels
             get { return customer.BankAccount; }
             set
             {
+                ValidateProperty(value);
                 customer.BankAccount = value;
                 OnPropertyChanged();
             }
         }
+
+        public string? PlaceholderID
+        {
+            get { return this._PlaceholderID; }
+            set
+            {
+                ValidateProperty(value);
+                this._PlaceholderID = value;
+            }
+        }
+        #endregion
         public CustomerVM()
         {
+            this.Errors = new Dictionary<string, List<string>>();
+            this.ValidationRules = new Dictionary<string, List<ValidationRule>>();
             customer = new Customer();
+            PlaceholderID = null;
+            // Create a Dictionary of validation rules for fast lookup. 
+            // Each property name of a validated property maps to one or more ValidationRule.
+            this.ValidationRules.Add(nameof(this.PlaceholderID), new List<ValidationRule>() { new CustomerIDValidationRule() });
+            this.ValidationRules.Add(nameof(this.FirstName), new List<ValidationRule>() { new CustomerFirstNameValidationRule() });
+            this.ValidationRules.Add(nameof(this.LastName), new List<ValidationRule>() { new CustomerLastNameValidationRule() });
+            this.ValidationRules.Add(nameof(this.Username), new List<ValidationRule>() { new CustomerUsernameValidationRule() });
+            this.ValidationRules.Add(nameof(this.Password), new List<ValidationRule>() { new CustomerPasswordValidationRule() });
+            this.ValidationRules.Add(nameof(this.Country), new List<ValidationRule>() { new CustomerCountryValidationRule() });
+            this.ValidationRules.Add(nameof(this.Region), new List<ValidationRule>() { new CustomerRegionValidationRule() });
+            this.ValidationRules.Add(nameof(this.City), new List<ValidationRule>() { new CustomerCityValidationRule() });
+            this.ValidationRules.Add(nameof(this.Address), new List<ValidationRule>() { new CustomerAddressValidationRule() });
+
         }
 
+        #region Implementaciones clases INotifyPropertyChanged y INotifyDataErrorInfo
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        protected void OnErrorsChanged(string propertyName)
+        {
+            this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+        public bool ValidateProperty<TValue>(TValue propertyValue, [CallerMemberName] string? propertyName = null)
+        {
+            // Limpia los errores anteriores
+            if (propertyName != null) 
+            {
+                this.Errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+            
+
+            if (this.ValidationRules.TryGetValue(propertyName, out List<ValidationRule>? propertyValidationRules))
+            {
+                //  Apply all the rules that are associated with the current property 
+                // and validate the property's value
+                propertyValidationRules
+                  .Select(validationRule => validationRule.Validate(propertyValue, CultureInfo.CurrentCulture))
+                  .Where(result => !result.IsValid)
+                  .ToList()
+                  .ForEach(invalidResult => AddError(propertyName, (string)invalidResult.ErrorContent));
+
+                return !PropertyHasErrors(propertyName);
+            }
+            return true;
+        }
+        public bool PropertyHasErrors(string propertyName)
+        {
+            return this.Errors.TryGetValue(propertyName, out List<string>? propertyErrors) && propertyErrors.Any();
+        }
+
+        public void AddError(string propertyName, string errorMessage, bool isWarning = false)
+        {
+            if (!this.Errors.TryGetValue(propertyName, out List<string>? propertyErrors))
+            {
+                propertyErrors = new List<string>();
+                this.Errors[propertyName] = propertyErrors;
+            }
+
+            if (!propertyErrors.Contains(errorMessage))
+            {
+                if (isWarning)
+                {
+                    // Move warnings to the end
+                    propertyErrors.Add(errorMessage);
+                }
+                else
+                {
+                    propertyErrors.Insert(0, errorMessage);
+                }
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        // This implementatio of GetErrors returns all errors of the specified property. 
+        // If the argument is 'null' instead of the property's name, 
+        // then the method will return all errors of all properties.
+        // This method is called by the WPF binding engine when ErrorsChanged event was raised and HasErrors retirn true
+        public IEnumerable GetErrors(string propertyName)
+        {
+            return string.IsNullOrWhiteSpace(propertyName)
+                       ? this.Errors.SelectMany(entry => entry.Value)
+                       : this.Errors.TryGetValue(propertyName, out List<string>? errors)
+                         ? errors
+                         : new List<string>();
+        }
+
+        // Returns 'true' if the view model has any invalid property
+        public bool HasErrors => this.Errors.Any();
+        #endregion
+
+        #region Funciones sobre instancia
         public bool UpdateBankAccountsList()
         {
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
@@ -185,29 +313,34 @@ namespace BankApp.ViewModels
             this.Address = null;
             this.BankAccount.Clear();
         }
+
+        #endregion
+
+        #region Acciones botones
         public ICommand SearchCustomer
         {
             get
             {
                 if (_SearchCustomerAction == null)
                 {
-                    _SearchCustomerAction = new RelayCommand(param => SearchCustomerOnDB(param), param => CanSearchCustomerOnDB(param));
+                    _SearchCustomerAction = new RelayCommand(param => SearchCustomerOnDB(), param => CanSearchCustomerOnDB());
                 }
                 return _SearchCustomerAction;
             }
         }
 
-        public void SearchCustomerOnDB(object param)
+        public void SearchCustomerOnDB()
         {
             
-            _ = int.TryParse((string?)param, out int number);
+            _ = int.TryParse((string?)this.PlaceholderID, out int number);
+
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
             SqlConnection conn;
 
             conn = new SqlConnection(conStr);
 
             conn.Open();
-            SqlCommand command = new("Select * from Customer where id=@id", conn);
+            SqlCommand command = new("SELECT * from Customer where id=@id", conn);
 
             command.Parameters.AddWithValue("@id", number);
 
@@ -238,10 +371,11 @@ namespace BankApp.ViewModels
 
         }
 
-        public bool CanSearchCustomerOnDB(object? param)
-        {
-            bool IsNumber = int.TryParse((string?)param, out _);
 
+        public bool CanSearchCustomerOnDB()
+        {
+            bool IsNumber = int.TryParse((string?)this.PlaceholderID, out _);
+            
             return IsNumber;
         }
 
@@ -371,7 +505,7 @@ namespace BankApp.ViewModels
 
         public bool CanUpdateCustomerOnDB()
         {
-            return this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
+            return this.ID!=null && this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
         }
 
         public ICommand DeleteCustomer
@@ -455,6 +589,7 @@ namespace BankApp.ViewModels
         {
             return this.ID != null;
         }
+        #endregion
     }
 
 }
