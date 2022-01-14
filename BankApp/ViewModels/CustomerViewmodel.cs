@@ -1,19 +1,18 @@
-﻿using System;
-
+﻿using BankApp.Utils;
+using BankApp.Validations;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
-using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
-using BankApp.Utils;
-using BankApp.Validations;
-using System.Windows.Input;
-using System.Windows;
-using System.Collections;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Linq;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 
 
@@ -49,7 +48,7 @@ namespace BankApp.ViewModels
         {
             get { return customer.ID; }
             set
-            {   
+            {
                 ValidateProperty(value);
                 customer.ID = value;
                 OnPropertyChanged();
@@ -198,12 +197,12 @@ namespace BankApp.ViewModels
         public bool ValidateProperty<TValue>(TValue propertyValue, [CallerMemberName] string? propertyName = null)
         {
             // Limpia los errores anteriores
-            if (propertyName != null) 
+            if (propertyName != null)
             {
                 this.Errors.Remove(propertyName);
                 OnErrorsChanged(propertyName);
             }
-            
+
 
             if (this.ValidationRules.TryGetValue(propertyName, out List<ValidationRule>? propertyValidationRules))
             {
@@ -331,7 +330,7 @@ namespace BankApp.ViewModels
 
         public void SearchCustomerOnDB()
         {
-            
+
             _ = int.TryParse((string?)this.PlaceholderID, out int number);
 
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
@@ -375,7 +374,7 @@ namespace BankApp.ViewModels
         public bool CanSearchCustomerOnDB()
         {
             bool IsNumber = int.TryParse((string?)this.PlaceholderID, out _);
-            
+
             return IsNumber;
         }
 
@@ -505,7 +504,7 @@ namespace BankApp.ViewModels
 
         public bool CanUpdateCustomerOnDB()
         {
-            return this.ID!=null && this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
+            return this.ID != null && this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
         }
 
         public ICommand DeleteCustomer

@@ -1,13 +1,11 @@
-﻿using System;
-
-using System.Collections.ObjectModel;
+﻿using BankApp.Utils;
+using Microsoft.Data.SqlClient;
+using System;
 using System.ComponentModel;
 using System.Configuration;
 using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
-using BankApp.Utils;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BankApp.ViewModels
 {

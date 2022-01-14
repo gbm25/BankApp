@@ -2,9 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
 
 namespace BankApp
 {
