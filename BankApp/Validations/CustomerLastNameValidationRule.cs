@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace BankApp.Validations
@@ -27,7 +22,7 @@ namespace BankApp.Validations
             {
                 return new ValidationResult(false, "El valor escrito supera el número máximo de caracteres permitidos (máximo 50 caracteres).");
             }
-            else if (LastName.Length <= 2)
+            else if (LastName.Length < 2)
             {
                 return new ValidationResult(false, "El valor escrito no supera el número mínimo de caracteres permitidos (mínimo 2 caracteres).");
             }

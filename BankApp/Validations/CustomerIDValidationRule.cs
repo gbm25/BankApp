@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows.Controls;
 
 namespace BankApp.Validations
@@ -13,20 +7,20 @@ namespace BankApp.Validations
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-        
-            if (!int.TryParse(value.ToString(),out int number))
+
+            if (!int.TryParse(value.ToString(), out int number))
             {
                 return new ValidationResult(false, "El valor debe de ser un número.");
             }
-            else if (number < 0)
+            else if (number <= 0)
             {
                 return new ValidationResult(false, "El valor debe de ser un número mayor que 0");
             }
             else
             {
-return ValidationResult.ValidResult;
+                return ValidationResult.ValidResult;
             }
-            
+
         }
     }
 }
