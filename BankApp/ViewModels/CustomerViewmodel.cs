@@ -171,8 +171,8 @@ namespace BankApp.ViewModels
             this.ValidationRules = new Dictionary<string, List<ValidationRule>>();
             customer = new Customer();
             PlaceholderID = null;
-            // Create a Dictionary of validation rules for fast lookup. 
-            // Each property name of a validated property maps to one or more ValidationRule.
+            // Crea un diccionario con las reglas de validaciones.
+            // Cada propiedad validada se puede mapear a uno o maws ValidationRule.
             this.ValidationRules.Add(nameof(this.PlaceholderID), new List<ValidationRule>() { new CustomerIDValidationRule() });
             this.ValidationRules.Add(nameof(this.FirstName), new List<ValidationRule>() { new CustomerFirstNameValidationRule() });
             this.ValidationRules.Add(nameof(this.LastName), new List<ValidationRule>() { new CustomerLastNameValidationRule() });
@@ -206,8 +206,7 @@ namespace BankApp.ViewModels
 
             if (this.ValidationRules.TryGetValue(propertyName, out List<ValidationRule>? propertyValidationRules))
             {
-                //  Apply all the rules that are associated with the current property 
-                // and validate the property's value
+                // Aplica las validaciones relacionadas con la propiedad y valida su valor
                 propertyValidationRules
                   .Select(validationRule => validationRule.Validate(propertyValue, CultureInfo.CurrentCulture))
                   .Where(result => !result.IsValid)
@@ -235,7 +234,7 @@ namespace BankApp.ViewModels
             {
                 if (isWarning)
                 {
-                    // Move warnings to the end
+                    // Mueve los avisos al final
                     propertyErrors.Add(errorMessage);
                 }
                 else
@@ -246,11 +245,10 @@ namespace BankApp.ViewModels
             }
         }
 
-        // This implementatio of GetErrors returns all errors of the specified property. 
-        // If the argument is 'null' instead of the property's name, 
-        // then the method will return all errors of all properties.
-        // This method is called by the WPF binding engine when ErrorsChanged event was raised and HasErrors retirn true
-        public IEnumerable GetErrors(string propertyName)
+        // Devuelve todos los errores de la propiedad especificada
+        // Si el argumento es null devuelve todos los errorees de todas las propiedades
+        // Este metodo es llamado por los bindings de WPF cuando se levanta un evento ErrorsChanged y HasErrors devuelve true
+        public IEnumerable GetErrors(string? propertyName)
         {
             return string.IsNullOrWhiteSpace(propertyName)
                        ? this.Errors.SelectMany(entry => entry.Value)
@@ -259,11 +257,22 @@ namespace BankApp.ViewModels
                          : new List<string>();
         }
 
-        // Returns 'true' if the view model has any invalid property
+        // Devuelve 'true' si alguna propiedad del viewmodel contiene errores
         public bool HasErrors => this.Errors.Any();
+
+        // Devuelve 'true' si alguna propiedad que forma parte de la infromación del cliente contiene errores
+        public bool CustomerInformationHasErrors()
+        {
+            return this.Errors.Where(property => property.Key != nameof(this.ID)).Any();
+        }
         #endregion
 
         #region Funciones sobre instancia
+
+        public bool CustomerInfoNotNull()
+        {
+            return this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
+        }
         public bool UpdateBankAccountsList()
         {
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
@@ -367,15 +376,11 @@ namespace BankApp.ViewModels
                 conn.Close();
                 MessageBox.Show("Cliente no encontrado.");
             }
-
         }
-
 
         public bool CanSearchCustomerOnDB()
         {
-            bool IsNumber = int.TryParse((string?)this.PlaceholderID, out _);
-
-            return IsNumber;
+            return !String.IsNullOrEmpty(this.PlaceholderID) && !PropertyHasErrors(nameof(this.PlaceholderID));
         }
 
         public ICommand NewCustomer
@@ -412,8 +417,10 @@ namespace BankApp.ViewModels
 
             if (result > 0)
             {
+
                 MessageBox.Show("Cliente creado.");
                 ResetCustomer();
+                this.Errors.Clear();
             }
             else
             {
@@ -424,7 +431,7 @@ namespace BankApp.ViewModels
 
         public bool CanCreateCustomerOnDB()
         {
-            return this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
+            return CustomerInfoNotNull() && !CustomerInformationHasErrors();
         }
 
         public ICommand UpdateCustomer
@@ -494,6 +501,7 @@ namespace BankApp.ViewModels
             {
                 MessageBox.Show("Cliente actualizado.");
                 ResetCustomer();
+                this.Errors.Clear();
             }
             else
             {
@@ -504,7 +512,7 @@ namespace BankApp.ViewModels
 
         public bool CanUpdateCustomerOnDB()
         {
-            return this.ID != null && this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
+            return this.ID != null && CustomerInfoNotNull() && !CustomerInformationHasErrors();
         }
 
         public ICommand DeleteCustomer
