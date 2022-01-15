@@ -7,20 +7,18 @@ namespace BankApp.Validations
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-
-            if (!int.TryParse(value.ToString(), out int number))
+            if (value is string ID && ID.Length > 0)
             {
-                return new ValidationResult(false, "El valor debe de ser un número.");
+                if (!int.TryParse(ID, out int number))
+                {
+                    return new ValidationResult(false, "El valor debe de ser un número.");
+                }
+                if (number <= 0)
+                {
+                    return new ValidationResult(false, "El valor debe de ser un número mayor que 0");
+                }
             }
-            else if (number <= 0)
-            {
-                return new ValidationResult(false, "El valor debe de ser un número mayor que 0");
-            }
-            else
-            {
-                return ValidationResult.ValidResult;
-            }
-
+            return ValidationResult.ValidResult;
         }
     }
 }

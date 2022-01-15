@@ -10,26 +10,22 @@ namespace BankApp.Validations
         {
             Regex ValidCountryPattern = new(@"^['’\p{L}\p{M}]+([-'’\p{L}\p{M}]|\s)+[-'’\p{L}\p{M}]$");
 
-            if (value is not string Country)
+            if (value is string Country && Country.Length > 0)
             {
-                return new ValidationResult(false, "El valor debe de ser un string.");
+                if (!ValidCountryPattern.IsMatch(Country))
+                {
+                    return new ValidationResult(false, "El valor introducido solo puede contener letras y espacios");
+                }
+                else if (Country.Length >= 100)
+                {
+                    return new ValidationResult(false, "El valor escrito supera el número máximo de caracteres permitidos (máximo 100 caracteres).");
+                }
+                else if (Country.Length < 2)
+                {
+                    return new ValidationResult(false, "El valor escrito no supera el número mínimo de caracteres permitidos (mínimo 2 caracteres).");
+                }
             }
-            else if (!ValidCountryPattern.IsMatch(Country))
-            {
-                return new ValidationResult(false, "El valor introducido solo puede contener letras y espacios");
-            }
-            else if (Country.Length >= 100)
-            {
-                return new ValidationResult(false, "El valor escrito supera el número máximo de caracteres permitidos (máximo 100 caracteres).");
-            }
-            else if (Country.Length < 2)
-            {
-                return new ValidationResult(false, "El valor escrito no supera el número mínimo de caracteres permitidos (mínimo 2 caracteres).");
-            }
-            else
-            {
-                return ValidationResult.ValidResult;
-            }
+            return ValidationResult.ValidResult;
         }
     }
 }
