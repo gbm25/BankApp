@@ -11,10 +11,10 @@
         Title="Customer" Height="500" Width="500">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
-            <DockPanel>
-                <TextBlock ToolTip="{Binding ErrorContent}" Foreground="Red" FontSize="20">!</TextBlock>
+            <WrapPanel>
                 <AdornedElementPlaceholder/>
-            </DockPanel>
+                <TextBlock ToolTip="{Binding ErrorContent}" Foreground="Red" FontSize="18" Margin="5,0,0,0">!</TextBlock>
+            </WrapPanel>
         </ControlTemplate>
     </Window.Resources>
 
@@ -29,10 +29,10 @@
             <Label Margin="0,0,15,0">
                 <TextBlock TextWrapping="Wrap" Text="Code:"/>
             </Label>
-            <TextBox x:Name="codeTextbox" 
+            <TextBox x:Name="codeTextbox"
                      Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
                      Text="{Binding PlaceholderID, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Margin="0,0,15,0" TextWrapping="Wrap" Width="120"/>
-            <Button x:Name="SearchIcon" Content="🔍" VerticalAlignment="Center" Height="30" Width="30" Command="{Binding SearchCustomer}"/>
+            <Button x:Name="SearchIcon" Content="🔍" Height="30" Width="30" Command="{Binding SearchCustomer}"/>
         </WrapPanel>
 
         <StackPanel x:Name="customerInfoSP" Grid.Row="1" >
