@@ -273,21 +273,76 @@ namespace BankApp.ViewModels
         {
             return this.FirstName != null && this.LastName != null && this.Username != null && this.Password != null && this.Country != null && this.Region != null && this.City != null && this.Address != null;
         }
+
+
+        ///<summary>
+        ///Devuelve una tuple, que contiene 'true' si existe el o se produjo un error y un string con el mensaje correspondiente, o un 'false' y un string vacii de no ser asi.
+        ///</summary>
+        public static Tuple<bool, string> CheckUsernameAlreadyExist(string connString, string? Username, int? ID)
+        {
+            // Lanza un error si Username es null
+            if (Username == null)
+            {
+                throw new ArgumentNullException(Username);
+            }
+            string checkUsername;
+
+            if (ID != null)
+            {
+                checkUsername = @"SELECT * FROM Customer WHERE username = @username and id != @id";
+            }
+            else
+            {
+                checkUsername = @"SELECT * FROM Customer WHERE username = @username";
+            }
+
+            using SqlConnection connection = new(connString);
+
+            using SqlCommand checkUsernamecmd = new(checkUsername, connection);
+
+            checkUsernamecmd.Parameters.AddWithValue("@username", Username);
+
+            if (ID != null)
+            {
+                checkUsernamecmd.Parameters.AddWithValue("@id", ID);
+            }
+
+            try
+            {
+                connection.Open();
+                using SqlDataReader reader = checkUsernamecmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    return new Tuple<bool, string>(true, "Nombre de usuario ya en uso.");
+                }
+                else
+                {
+                    return new Tuple<bool, string>(false, "");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<bool, string>(true, $"Se ha producido un error inesperado.\r\n{ex}");
+            }
+
+
+        }
         public bool UpdateBankAccountsList()
         {
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
-            SqlConnection conn;
 
-            conn = new SqlConnection(conStr);
+            using SqlConnection conn = new(conStr);
 
-            conn.Open();
             SqlCommand command = new("SELECT * FROM Account WHERE customer_id=@id", conn);
 
             command.Parameters.AddWithValue("@id", customer.ID);
 
             try
             {
+                conn.Open();
                 using SqlDataReader reader = command.ExecuteReader();
+
                 while (reader.Read())
                 {
                     BankAccount account = new();
@@ -299,7 +354,6 @@ namespace BankApp.ViewModels
                     this.BankAccount.Add(account);
 
                 }
-                conn.Close();
                 return true;
             }
             catch
@@ -343,9 +397,8 @@ namespace BankApp.ViewModels
             _ = int.TryParse((string?)this.PlaceholderID, out int number);
 
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
-            SqlConnection conn;
-
-            conn = new SqlConnection(conStr);
+           
+            using SqlConnection conn = new(conStr);
 
             conn.Open();
             SqlCommand command = new("SELECT * from Customer where id=@id", conn);
@@ -368,12 +421,10 @@ namespace BankApp.ViewModels
                 this.LastUpdate = reader["last_update"] == DBNull.Value ? null : (DateTime)reader["last_update"];
                 this.BankAccount.Clear();
 
-                conn.Close();
                 MessageBox.Show("Cliente cargado.");
             }
             else
             {
-                conn.Close();
                 MessageBox.Show("Cliente no encontrado.");
             }
         }
@@ -399,6 +450,13 @@ namespace BankApp.ViewModels
         {
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
 
+            Tuple<bool, string> userExist = CheckUsernameAlreadyExist(conStr, this.Username, null);
+            if (userExist.Item1)
+            {
+                AddError(nameof(this.Username), userExist.Item2);
+                return;
+            }
+
             using SqlConnection connection = new(conStr);
             string query = "INSERT INTO dbo.Customer(first_name,last_name,username,password,country,region,city,address) VALUES (@first_name,@last_name,@username,@password,@country,@region,@city,@address)";
 
@@ -417,7 +475,6 @@ namespace BankApp.ViewModels
 
             if (result > 0)
             {
-
                 MessageBox.Show("Cliente creado.");
                 ResetCustomer();
                 this.Errors.Clear();
@@ -426,7 +483,6 @@ namespace BankApp.ViewModels
             {
                 MessageBox.Show("No se ha podido crear el cliente.");
             }
-
         }
 
         public bool CanCreateCustomerOnDB()
@@ -450,6 +506,13 @@ namespace BankApp.ViewModels
         {
             string conStr = ConfigurationManager.ConnectionStrings["bankapp"].ToString();
 
+            Tuple<bool,string> userExist = CheckUsernameAlreadyExist(conStr, this.Username,this.ID);
+            if (userExist.Item1)
+            {
+                AddError(nameof(this.Username), userExist.Item2);
+                return;
+            }
+
             using SqlConnection connection = new(conStr);
 
             string checkExist = @"IF EXISTS(SELECT * FROM Customer WHERE id = @id ";
@@ -462,8 +525,7 @@ namespace BankApp.ViewModels
                 checkExist += @"AND last_update IS NULL)";
             }
 
-
-            string query = checkExist + @"
+            string queryUpdate = checkExist + @"
                                  BEGIN
                                     UPDATE Customer 
                                     SET first_name = @first_name,
@@ -478,24 +540,25 @@ namespace BankApp.ViewModels
                                     WHERE id = @id;
                                  END";
 
-            using SqlCommand command = new(query, connection);
+            using SqlCommand queryUpdatecmd = new(queryUpdate, connection);
 
-            command.Parameters.AddWithValue("@id", this.ID);
-            command.Parameters.AddWithValue("@first_name", this.FirstName);
-            command.Parameters.AddWithValue("@last_name", this.LastName);
-            command.Parameters.AddWithValue("@username", this.Username);
-            command.Parameters.AddWithValue("@password", this.Password);
-            command.Parameters.AddWithValue("@country", this.Country);
-            command.Parameters.AddWithValue("@region", this.Region);
-            command.Parameters.AddWithValue("@city", this.City);
-            command.Parameters.AddWithValue("@address", this.Address);
+            queryUpdatecmd.Parameters.AddWithValue("@id", this.ID);
+            queryUpdatecmd.Parameters.AddWithValue("@first_name", this.FirstName);
+            queryUpdatecmd.Parameters.AddWithValue("@last_name", this.LastName);
+            queryUpdatecmd.Parameters.AddWithValue("@username", this.Username);
+            queryUpdatecmd.Parameters.AddWithValue("@password", this.Password);
+            queryUpdatecmd.Parameters.AddWithValue("@country", this.Country);
+            queryUpdatecmd.Parameters.AddWithValue("@region", this.Region);
+            queryUpdatecmd.Parameters.AddWithValue("@city", this.City);
+            queryUpdatecmd.Parameters.AddWithValue("@address", this.Address);
             if (this.LastUpdate != null)
             {
-                command.Parameters.AddWithValue("@last_update", this.LastUpdate);
+                queryUpdatecmd.Parameters.AddWithValue("@last_update", this.LastUpdate);
             }
 
             connection.Open();
-            int result = command.ExecuteNonQuery();
+
+            int result = queryUpdatecmd.ExecuteNonQuery();
 
             if (result > 0)
             {
