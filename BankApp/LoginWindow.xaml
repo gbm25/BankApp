@@ -7,6 +7,14 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Control" Height="150" Width="250">
+    <Window.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <WrapPanel VerticalAlignment="Center">
+                <AdornedElementPlaceholder/>
+                <TextBlock ToolTip="{Binding ErrorContent}" Foreground="Red" FontSize="18" Margin="5,0,0,0">!</TextBlock>
+            </WrapPanel>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -22,7 +30,9 @@
             <Label Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <TextBlock TextWrapping="Wrap" Text="Username:"/>
             </Label>
-            <TextBox x:Name="usernameTextbox" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Username,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBox x:Name="usernameTextbox" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" 
+                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}"
+                     Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
         </Grid>
         <Grid Grid.Row="1" Margin="15,0">
             <Grid.ColumnDefinitions>
@@ -32,7 +42,9 @@
             <Label Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <TextBlock TextWrapping="Wrap" Text="Password:"/>
             </Label>
-            <PasswordBox x:Name="passwordPWbox" utils:PasswordHelper.Attach="True" utils:PasswordHelper.Password="{Binding Password,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"  Grid.Column="1"  VerticalAlignment="Center"/>
+            <PasswordBox x:Name="passwordPWbox" Grid.Column="1"  VerticalAlignment="Center"
+                         utils:PasswordHelper.Attach="True" utils:PasswordHelper.Password="{Binding Password,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True}"
+                         Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
         </Grid>
         <Grid Grid.Row="2" >
             <Grid.ColumnDefinitions>
