@@ -1,7 +1,7 @@
 INSERT INTO bankappdb.dbo.Customer (first_name,last_name,username,password,country,region,city,address,last_update)
-VALUES ('Pepe','Gonzalez','PeGon','Contraseña1234','España','Galicia','A Coruña','Calle de la Republica nº3 bajo 2',NULL),
-('Jose Antonio','Fernandez','JoFer','abc123..','España','Galicia','A Coruña','Calle Gran via nº14 portal 3 5I',NULL),
-('Manuel','Prado','MaPra','123456789','España','Castilla y leon','Valladolid','Plaza España nº15',NULL);
+VALUES ('Pepe','Gonzalez','PeGon','Abc123..','España','Galicia','A Coruña','Calle de la Republica nº3 bajo 2',NULL),
+('Jose Antonio','Fernandez','JoFer','Contraseña1234!','España','Galicia','A Coruña','Calle Gran via nº14 portal 3 5I',NULL),
+('Manuel','Prado','MaPra','grteFGYawet67','España','Castilla y león','Valladolid','Plaza España nº15',NULL);
 
 INSERT INTO bankappdb.dbo.Account (customer_id,account_number,description)
 VALUES (1,'ES6621000418401234567891','Cuenta personal'),
